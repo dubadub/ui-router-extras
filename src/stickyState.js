@@ -97,8 +97,8 @@ angular.module("ct.ui.router.extras").config(
       root = pendingRestore = undefined;
       pendingTransitions = [];
 
-      // Decorate any state attribute in order to get access to the internal state representation.
-      $stateProvider.decorator('parent', function (state, parentFn) {
+
+      function stateProviderDecorator (state, parentFn) {
         // Capture each internal UI-Router state representations as opposed to the user-defined state object.
         // The internal state is, e.g., the state returned by $state.$current as opposed to $state.current
         internalStates[state.self.name] = state;
@@ -113,7 +113,10 @@ angular.module("ct.ui.router.extras").config(
         }
 
         return parentFn(state);
-      });
+      }
+
+      // Decorate any state attribute in order to get access to the internal state representation.
+      $stateProvider.decorator('parent', stateProviderDecorator);
 
       var $state_transitionTo; // internal reference to the real $state.transitionTo function
       // Decorate the $state service, so we can decorate the $state.transitionTo() function with sticky state stuff.
